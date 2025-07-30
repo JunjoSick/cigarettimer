@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Focus</title>
+    <!-- Favicon will be injected by JS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <!-- Left Panel: Timer App -->
+    <div class="left-panel">
+        <div id="animation-container"></div>
+        <div class="app-container" id="app-container">
+            <h1 id="mode-title">Focus</h1>
+            <div class="timer-display" id="timer-display">
+                <span id="minutes">25</span>:<span id="seconds">00</span>
+            </div>
+            <div class="quote-display">
+                <p id="quote"></p>
+            </div>
+            <div class="controls">
+                <button id="start-pause">Start</button>
+                <button id="reset">Reset</button>
+                <button id="skip" title="Skip to next phase">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5.536 21.886a1.004 1.004 0 0 0 1.033-.064l13-9a1 1 0 0 0 0-1.644l-13-9A1 1 0 0 0 5 3v18a1 1 0 0 0 .536.886z"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Panel: Ashtray -->
+    <div class="right-panel">
+        <div class="ashtray-container">
+            <div id="butt-area"></div>
+            <img src="./ashtray.png" alt="Ashtray" class="ashtray-image">
+            <div id="session-count" class="session-count-display">0</div>
+        </div>
+    </div>
+
+    <!-- Audio elements -->
+    <audio id="notification-sound" src="./notification.mp3" preload="auto"></audio>
+    <audio id="pause-sound" src="./pause.mp3" preload="auto"></audio>
+
+    <script src="./script.js"></script>
+</body>
+</html>
