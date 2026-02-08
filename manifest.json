@@ -1,0 +1,25 @@
+{
+    "name": "Focus - Pomodoro Timer",
+    "short_name": "Focus",
+    "description": "A beautiful Pomodoro timer to help you focus and take mindful breaks.",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#1a1a1a",
+    "theme_color": "#1a1a1a",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "./ashtray.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "./ashtray.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["productivity", "utilities"]
+}

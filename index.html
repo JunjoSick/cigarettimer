@@ -3,48 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A beautiful Pomodoro timer to help you focus and take mindful breaks.">
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Focus</title>
-    <!-- Favicon will be injected by JS -->
+    
+    <link rel="manifest" href="./manifest.json">
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 
-    <!-- Left Panel: Timer App -->
-    <div class="left-panel">
-        <div id="animation-container"></div>
-        <div class="app-container" id="app-container">
+    <div id="smoke-container" class="smoke-container" aria-hidden="true"></div>
+
+    <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <a href="#app-container" class="skip-link">Skip to main content</a>
+
+    <button id="settings-btn" class="settings-btn" aria-label="Open settings" aria-expanded="false" aria-controls="settings-panel">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.53c.04-.32.07-.64.07-.97s-.03-.66-.07-1l2.11-1.63c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.31-.61-.22l-2.49 1c-.52-.39-1.06-.73-1.69-.98l-.37-2.65A.506.506 0 0 0 14 2h-4c-.25 0-.46.18-.5.42l-.37 2.65c-.63.25-1.17.59-1.69.98l-2.49-1c-.22-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64L4.57 11c-.04.34-.07.67-.07 1s.03.65.07.97l-2.11 1.66c-.19.15-.25.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1.01c.52.4 1.06.74 1.69.99l.37 2.65c.04.24.25.42.5.42h4c.25 0 .46-.18.5-.42l.37-2.65c.63-.26 1.17-.59 1.69-.99l2.49 1.01c.22.08.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.66z"/>
+        </svg>
+    </button>
+
+    <button id="stats-btn" class="stats-btn" aria-label="View statistics" aria-expanded="false" aria-controls="stats-panel">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+        </svg>
+    </button>
+
+    <div id="shortcuts-hint" class="shortcuts-hint" aria-hidden="true">
+        <span><kbd>Space</kbd> Play/Pause</span>
+        <span><kbd>R</kbd> Reset</span>
+        <span><kbd>S</kbd> Skip</span>
+    </div>
+
+    <div id="settings-overlay" class="panel-overlay" aria-hidden="true"></div>
+    <aside id="settings-panel" class="settings-panel side-panel" role="dialog" aria-label="Settings" aria-hidden="true">
+        <div class="panel-header">
+            <h2 id="settings-title">Settings</h2>
+            <button id="settings-close" class="panel-close" aria-label="Close settings">&times;</button>
+        </div>
+        
+        <div class="panel-content">
+            <div class="setting-group">
+                <label for="focus-duration">Focus Duration</label>
+                <div class="setting-input">
+                    <input type="range" id="focus-duration" min="1" max="60" value="25" aria-describedby="focus-duration-value">
+                    <span id="focus-duration-value" class="setting-value">25 min</span>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label for="short-break-duration">Short Break</label>
+                <div class="setting-input">
+                    <input type="range" id="short-break-duration" min="1" max="30" value="5" aria-describedby="short-break-duration-value">
+                    <span id="short-break-duration-value" class="setting-value">5 min</span>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label for="long-break-duration">Long Break</label>
+                <div class="setting-input">
+                    <input type="range" id="long-break-duration" min="5" max="60" value="15" aria-describedby="long-break-duration-value">
+                    <span id="long-break-duration-value" class="setting-value">15 min</span>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label for="long-break-interval">Long Break Every</label>
+                <div class="setting-input">
+                    <input type="range" id="long-break-interval" min="2" max="8" value="4" aria-describedby="long-break-interval-value">
+                    <span id="long-break-interval-value" class="setting-value">4 sessions</span>
+                </div>
+            </div>
+
+            <div class="setting-group toggle-group">
+                <label for="sound-enabled">Sound</label>
+                <label class="toggle">
+                    <input type="checkbox" id="sound-enabled" checked>
+                    <span class="toggle-slider" aria-hidden="true"></span>
+                </label>
+            </div>
+
+            <div class="setting-group toggle-group">
+                <label for="auto-start">Auto-start Next Session</label>
+                <label class="toggle">
+                    <input type="checkbox" id="auto-start">
+                    <span class="toggle-slider" aria-hidden="true"></span>
+                </label>
+            </div>
+
+            <div class="setting-group toggle-group">
+                <label for="notifications-enabled">Browser Notifications</label>
+                <label class="toggle">
+                    <input type="checkbox" id="notifications-enabled">
+                    <span class="toggle-slider" aria-hidden="true"></span>
+                </label>
+            </div>
+
+            <div class="setting-group toggle-group">
+                <label for="smoke-enabled">Smoke Effects</label>
+                <label class="toggle">
+                    <input type="checkbox" id="smoke-enabled" checked>
+                    <span class="toggle-slider" aria-hidden="true"></span>
+                </label>
+            </div>
+        </div>
+    </aside>
+
+    <div id="stats-overlay" class="panel-overlay" aria-hidden="true"></div>
+    <aside id="stats-panel" class="stats-panel side-panel" role="dialog" aria-label="Statistics" aria-hidden="true">
+        <div class="panel-header">
+            <h2 id="stats-title">Statistics</h2>
+            <button id="stats-close" class="panel-close" aria-label="Close statistics">&times;</button>
+        </div>
+        
+        <div class="panel-content">
+            <div class="stats-hero">
+                <div class="streak-display">
+                    <span id="current-streak" class="streak-number">0</span>
+                    <span class="streak-label">Day Streak 🔥</span>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h3>Today</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span id="today-sessions" class="stat-number">0</span>
+                        <span class="stat-label">Sessions</span>
+                    </div>
+                    <div class="stat-card">
+                        <span id="today-focus-time" class="stat-number">0m</span>
+                        <span class="stat-label">Focus Time</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h3>This Week</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span id="week-sessions" class="stat-number">0</span>
+                        <span class="stat-label">Sessions</span>
+                    </div>
+                    <div class="stat-card">
+                        <span id="week-focus-time" class="stat-number">0h</span>
+                        <span class="stat-label">Focus Time</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h3>All Time</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span id="total-sessions" class="stat-number">0</span>
+                        <span class="stat-label">Sessions</span>
+                    </div>
+                    <div class="stat-card">
+                        <span id="total-focus-time" class="stat-number">0h</span>
+                        <span class="stat-label">Focus Time</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-section">
+                <h3>This Week</h3>
+                <div class="week-chart" id="week-chart" role="img" aria-label="Sessions per day this week">
+                    </div>
+            </div>
+
+            <div class="stats-actions">
+                <button id="export-stats" class="btn-secondary">Export Data</button>
+                <button id="clear-stats" class="btn-danger">Clear All Data</button>
+            </div>
+        </div>
+    </aside>
+
+    <main class="left-panel">
+        <div id="animation-container" aria-hidden="true"></div>
+        <div class="app-container" id="app-container" role="timer" aria-live="off">
             <h1 id="mode-title">Focus</h1>
-            <div class="timer-display" id="timer-display">
-                <span id="minutes">25</span>:<span id="seconds">00</span>
+            <div class="timer-display" id="timer-display" aria-label="Timer">
+                <span id="minutes" aria-label="Minutes">25</span>:<span id="seconds" aria-label="Seconds">00</span>
             </div>
+            <div class="session-indicator" id="session-indicator" role="progressbar" aria-label="Progress to long break">
+                </div>
             <div class="quote-display">
-                <p id="quote"></p>
+                <p id="quote" aria-live="polite"></p>
             </div>
-            <div class="controls">
-                <button id="start-pause">Start</button>
-                <button id="reset">Reset</button>
-                <button id="skip" title="Skip to next phase">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <div class="controls" role="group" aria-label="Timer controls">
+                <button id="start-pause" aria-label="Start timer">Start</button>
+                <button id="reset" aria-label="Reset timer">Reset</button>
+                <button id="skip" aria-label="Skip to next phase">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M5.536 21.886a1.004 1.004 0 0 0 1.033-.064l13-9a1 1 0 0 0 0-1.644l-13-9A1 1 0 0 0 5 3v18a1 1 0 0 0 .536.886z"></path>
                     </svg>
                 </button>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Right Panel: Ashtray -->
-    <div class="right-panel">
+    <aside class="right-panel" aria-label="Completed sessions visualization">
         <div class="ashtray-container">
-            <div id="butt-area"></div>
-            <img src="./ashtray.png" alt="Ashtray" class="ashtray-image">
-            <div id="session-count" class="session-count-display">0</div>
+            <img src="./ashtray.png" alt="" class="ashtray-image" aria-hidden="true">
+            <div id="butt-area" aria-hidden="true"></div>
+            <div id="session-count" class="session-count-display" aria-label="Sessions completed today">0</div>
         </div>
-    </div>
+    </aside>
 
-    <!-- Audio elements -->
     <audio id="notification-sound" src="./notification.mp3" preload="auto"></audio>
     <audio id="pause-sound" src="./pause.mp3" preload="auto"></audio>
 
