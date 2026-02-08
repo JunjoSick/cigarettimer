@@ -548,6 +548,73 @@ kbd {
     text-transform: uppercase;
 }
 
+/* --- Main Timer Controls --- */
+.controls {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
+}
+
+.controls button {
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.8rem 2rem;
+    border-radius: 50px;
+    border: 2px solid var(--accent-color);
+    background: transparent;
+    color: var(--accent-color);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    min-width: 100px;
+}
+
+.controls button:hover {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.controls button:active {
+    transform: translateY(0);
+}
+
+/* Specific style for the Start/Pause button to make it pop */
+#start-pause {
+    background: var(--accent-color);
+    color: var(--bg-color);
+    border-color: var(--accent-color);
+    padding: 0.8rem 2.5rem;
+}
+
+#start-pause:hover {
+    background: transparent;
+    color: var(--accent-color);
+}
+
+/* Style for the Skip button (icon) */
+#skip {
+    padding: 0.8rem;
+    min-width: auto;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+}
+
+#skip svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
 /* --- Ashtray & Cigarette Fixes --- */
 .ashtray-container {
     position: relative;
